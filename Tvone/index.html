@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>NextWatchMedia</title>
+
+<style>
+
+/* =========================
+   RESET
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+html,body{
+    background:#050505;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    overflow-x:hidden;
+    color:#fff;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at top,#ff005522,transparent 35%),
+        radial-gradient(circle at bottom,#0055ff22,transparent 35%);
+    z-index:-1;
+}
+
+
+/* =========================
+   PAGE
+========================= */
+
+.page{
+    width:100%;
+    max-width:480px;
+    margin:auto;
+    min-height:100vh;
+    padding-bottom:50px;
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header{
+    padding:18px;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:800;
+    letter-spacing:1px;
+}
+
+.logo span{
+    color:#ff2f6d;
+}
+
+.sub{
+    margin-top:6px;
+    color:#999;
+    font-size:13px;
+}
+
+
+/* =========================
+   PHOTO CARD
+========================= */
+
+.photo-card{
+    margin:12px;
+    background:#111;
+    border-radius:24px;
+    overflow:hidden;
+
+    box-shadow:
+        0 0 0 1px rgba(255,255,255,.05),
+        0 20px 40px rgba(0,0,0,.45);
+}
+
+.photo-box{
+    position:relative;
+    width:100%;
+    min-height:320px;
+    background:#000;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+
+/* =========================
+   PHOTO
+========================= */
+
+.photo-box img{
+    width:100%;
+    display:block;
+    max-height:75vh;
+    object-fit:cover;
+    background:#000;
+
+    opacity:0;
+
+    transition:
+        opacity .6s ease;
+}
+
+.photo-box img.show{
+    opacity:1;
+}
+
+
+/* =========================
+   LOADING
+========================= */
+
+.photo-loading{
+    position:absolute;
+    inset:0;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-direction:column;
+
+    background:#080808;
+
+    z-index:10;
+
+    transition:
+        opacity .5s ease,
+        visibility .5s ease;
+}
+
+.photo-loading.hide{
+    opacity:0;
+    visibility:hidden;
+    pointer-events:none;
+}
+
+.loading-spinner{
+    width:40px;
+    height:40px;
+
+    border:3px solid rgba(255,255,255,.15);
+    border-top-color:#ff2f6d;
+
+    border-radius:50%;
+
+    animation:
+        loadingSpin .8s linear infinite;
+
+    margin-bottom:12px;
+}
+
+.loading-text{
+    color:#aaa;
+    font-size:13px;
+    letter-spacing:.5px;
+}
+
+@keyframes loadingSpin{
+
+    to{
+        transform:rotate(360deg);
+    }
+
+}
+
+
+/* =========================
+   GRADIENT
+========================= */
+
+.photo-box::after{
+    content:"";
+
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:140px;
+
+    background:
+        linear-gradient(
+            to top,
+            #000000dd,
+            transparent
+        );
+
+    pointer-events:none;
+
+    z-index:2;
+}
+
+
+/* =========================
+   BADGE
+========================= */
+
+.badge{
+    position:absolute;
+
+    top:12px;
+    left:12px;
+
+    background:#ff2f6d;
+
+    padding:8px 12px;
+
+    border-radius:50px;
+
+    font-size:12px;
+    font-weight:700;
+
+    z-index:5;
+
+    box-shadow:
+        0 5px 15px rgba(255,0,102,.4);
+}
+
+
+/* =========================
+   INFO
+========================= */
+
+.photo-info{
+    padding:16px;
+}
+
+.photo-title{
+    font-size:20px;
+    font-weight:700;
+    line-height:1.4;
+}
+
+.photo-desc{
+    margin-top:10px;
+
+    color:#aaa;
+
+    font-size:14px;
+    line-height:1.6;
+}
+
+
+/* =========================
+   STATS
+========================= */
+
+.stats{
+    display:flex;
+
+    gap:14px;
+
+    margin-top:14px;
+
+    color:#ccc;
+
+    font-size:13px;
+
+    flex-wrap:wrap;
+}
+
+
+/* =========================
+   WATCH BUTTON
+========================= */
+
+.watch-button{
+    display:block;
+
+    margin-top:18px;
+
+    width:100%;
+
+    padding:15px 20px;
+
+    background:#ff2f6d;
+
+    color:#fff;
+
+    text-align:center;
+
+    text-decoration:none;
+
+    font-size:15px;
+
+    font-weight:800;
+
+    letter-spacing:.7px;
+
+    border-radius:14px;
+
+    transition:
+        transform .2s ease,
+        background .2s ease,
+        box-shadow .2s ease;
+
+    box-shadow:
+        0 8px 20px rgba(255,47,109,.25);
+}
+
+.watch-button:hover{
+    background:#ff477d;
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 12px 25px rgba(255,47,109,.4);
+}
+
+.watch-button:active{
+    transform:scale(.98);
+}
+
+
+/* =========================
+   TRENDING
+========================= */
+
+.section-title{
+    padding:18px 16px 10px;
+
+    font-size:18px;
+    font-weight:700;
+}
+
+
+/* =========================
+   NATIVE BANNER
+========================= */
+
+.ads-card{
+    margin:12px;
+
+    background:#121212;
+
+    border-radius:20px;
+
+    padding:14px;
+
+    border:1px solid rgba(255,255,255,.05);
+
+    overflow:hidden;
+}
+
+.ads-label{
+    color:#777;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    margin-bottom:12px;
+
+    letter-spacing:1px;
+}
+
+
+/* =========================
+   HISTATS
+========================= */
+
+.histats-box{
+    margin:12px;
+
+    padding:12px;
+
+    background:#121212;
+
+    border-radius:16px;
+
+    text-align:center;
+
+    border:1px solid rgba(255,255,255,.05);
+}
+
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+    text-align:center;
+
+    color:#666;
+
+    font-size:12px;
+
+    padding:30px 15px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:480px){
+
+    .photo-title{
+        font-size:18px;
+    }
+
+    .photo-box img{
+        max-height:70vh;
+    }
+
+    .photo-box{
+        min-height:300px;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<div class="page">
+
+
+<!-- =========================
+     HEADER
+========================= -->
+
+<div class="header">
+
+    <div class="logo">
+        Next Viral <span>Hubs</span>
+    </div>
+
+    <div class="sub">
+        Watch trending viral videos everyday 🔥
+    </div>
+
+</div>
+
+
+<!-- =========================
+     PHOTO CARD
+========================= -->
+
+<div class="photo-card">
+
+
+    <div class="photo-box">
+
+
+        <!-- LOADING -->
+
+        <div
+            class="photo-loading"
+            id="photoLoading"
+        >
+
+            <div class="loading-spinner"></div>
+
+            <div class="loading-text">
+                Loading...
+            </div>
+
+        </div>
+
+
+        <!-- BADGE -->
+
+        <div class="badge">
+            🔥 TRENDING
+        </div>
+
+
+        <!-- ACEIMG PHOTO -->
+
+        <img
+            id="mainPhoto"
+            src=""
+            alt="Trending Photo"
+        >
+
+
+    </div>
+
+
+    <!-- =========================
+         INFO
+    ========================= -->
+
+    <div class="photo-info">
+
+
+        <div class="photo-title">
+            Hot Trending Video Tonight 😍
+        </div>
+
+
+        <div class="photo-desc">
+            Watch the latest viral content people are talking about right now.
+        </div>
+
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div>
+                👁 9.3M Views
+            </div>
+
+            <div>
+                ❤️ 491K Likes
+            </div>
+
+            <div>
+                🔥 Trending
+            </div>
+
+        </div>
+
+
+        <!-- WATCH NOW -->
+
+        <a
+            id="watchButton"
+            class="watch-button"
+            href="https://x-hubb.github.io/Badiesgirlhub"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            WATCH NOW
+        </a>
+
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     TRENDING
+========================= -->
+
+<div class="section-title">
+    🔥 Trending Videos
+</div>
+
+
+<!-- =========================
+     NATIVE BANNER
+     POSISI DI BAWAH FOTO
+========================= -->
+
+<div class="ads-card">
+
+    <div class="ads-label">
+        <center>Advertisement</center>
+    </div>
+
+    <div style="text-align:center;">
+
+        <script
+            data-cfasync="false"
+            async
+            type="text/javascript"
+            src="//qw.rolledipocras.com/tiTtAiKEeLuZ/151239">
+        </script>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     HISTATS
+========================= -->
+
+<div class="histats-box">
+
+    <div id="histats_counter"></div>
+
+
+    <!-- Histats.com START -->
+
+    <script type="text/javascript">
+
+        var _Hasync = _Hasync || [];
+
+        _Hasync.push([
+            'Histats.start',
+            '1,5044778,4,8,210,40,00011111'
+        ]);
+
+        _Hasync.push([
+            'Histats.fasi',
+            '1'
+        ]);
+
+        _Hasync.push([
+            'Histats.track_hits',
+            ''
+        ]);
+
+
+        (function(){
+
+            var hs =
+                document.createElement('script');
+
+            hs.type =
+                'text/javascript';
+
+            hs.async =
+                true;
+
+            hs.src =
+                '//s10.histats.com/js15_as.js';
+
+
+            (
+                document.getElementsByTagName('head')[0] ||
+                document.getElementsByTagName('body')[0]
+            ).appendChild(hs);
+
+        })();
+
+    </script>
+
+
+    <noscript>
+
+        <a
+            href="/"
+            target="_blank"
+        >
+
+            <img
+                src="//sstatic1.histats.com/0.gif?5044778&101"
+                alt=""
+                border="0"
+            >
+
+        </a>
+
+    </noscript>
+
+    <!-- Histats.com END -->
+
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<div class="footer">
+
+    © 2026 Viral Media • All Rights Reserved
+
+</div>
+
+
+</div>
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+(function(){
+
+
+    /* =========================
+       ACEIMG PHOTO
+    ========================= */
+
+    const PHOTO_URL =
+        "https://cdn.aceimg.com/fDSS6VpWV.jpg";
+
+
+    /* =========================
+       SMARTLINK
+    ========================= */
+
+    const SMARTLINK =
+        "https://x-hubb.github.io/Badiesgirlhub/";
+
+
+    /* =========================
+       ELEMENT
+    ========================= */
+
+    const mainPhoto =
+        document.getElementById(
+            "mainPhoto"
+        );
+
+    const photoLoading =
+        document.getElementById(
+            "photoLoading"
+        );
+
+    const watchButton =
+        document.getElementById(
+            "watchButton"
+        );
+
+
+    /* =========================
+       SMARTLINK
+    ========================= */
+
+    if(watchButton){
+
+        watchButton.href =
+            SMARTLINK;
+
+    }
+
+
+    /* =========================
+       WAIT 2 SECONDS
+    ========================= */
+
+    setTimeout(function(){
+
+
+        /* =========================
+           LOAD ACEIMG PHOTO
+        ========================= */
+
+        if(mainPhoto){
+
+            mainPhoto.src =
+                PHOTO_URL;
+
+
+            mainPhoto.onload =
+                function(){
+
+
+                    /* SHOW PHOTO */
+
+                    mainPhoto.classList.add(
+                        "show"
+                    );
+
+
+                    /* HIDE LOADING */
+
+                    if(photoLoading){
+
+                        photoLoading.classList.add(
+                            "hide"
+                        );
+
+                    }
+
+                };
+
+
+            /* =========================
+               ERROR
+            ========================= */
+
+            mainPhoto.onerror =
+                function(){
+
+                    if(photoLoading){
+
+                        photoLoading.innerHTML =
+
+                            '<div class="loading-text">' +
+                            'Image failed to load' +
+                            '</div>';
+
+                    }
+
+                };
+
+        }
+
+
+    },2000);
+
+
+    /* =========================
+       IMPRESSION TRACKING
+    ========================= */
+
+    const impressionSeen =
+        new Set();
+
+
+    function tagImpression(
+        name,
+        element
+    ){
+
+        if(
+            !element ||
+            impressionSeen.has(name)
+        ){
+
+            return;
+
+        }
+
+
+        impressionSeen.add(name);
+
+
+        try{
+
+            const key =
+                "nextwatch_impressions";
+
+
+            const data =
+                JSON.parse(
+                    localStorage.getItem(key) ||
+                    "[]"
+                );
+
+
+            data.push({
+
+                event:name,
+
+                time:
+                    new Date().toISOString(),
+
+                page:
+                    location.href
+
+            });
+
+
+            localStorage.setItem(
+
+                key,
+
+                JSON.stringify(
+                    data.slice(-100)
+                )
+
+            );
+
+        }catch(e){}
+
+
+        element.setAttribute(
+            "data-impression-tagged",
+            "true"
+        );
+
+    }
+
+
+    /* =========================
+       PAGE IMPRESSION
+    ========================= */
+
+    tagImpression(
+        "page_impression",
+        document.body
+    );
+
+
+    /* =========================
+       PHOTO / BANNER
+    ========================= */
+
+    const photoCard =
+        document.querySelector(
+            ".photo-card"
+        );
+
+    const adCard =
+        document.querySelector(
+            ".ads-card"
+        );
+
+
+    /* =========================
+       INTERSECTION OBSERVER
+    ========================= */
+
+    if(
+        "IntersectionObserver" in window
+    ){
+
+        const observer =
+            new IntersectionObserver(
+
+                function(entries){
+
+                    entries.forEach(
+                        function(entry){
+
+                            if(
+                                !entry.isIntersecting ||
+                                entry.intersectionRatio < 0.25
+                            ){
+
+                                return;
+
+                            }
+
+
+                            /* PHOTO */
+
+                            if(
+                                entry.target === photoCard
+                            ){
+
+                                tagImpression(
+                                    "photo_impression",
+                                    entry.target
+                                );
+
+                            }
+
+
+                            /* NATIVE BANNER */
+
+                            if(
+                                entry.target === adCard
+                            ){
+
+                                tagImpression(
+                                    "native_banner_impression",
+                                    entry.target
+                                );
+
+                            }
+
+
+                            observer.unobserve(
+                                entry.target
+                            );
+
+                        }
+                    );
+
+                },
+
+                {
+                    threshold:[0.25]
+                }
+
+            );
+
+
+        if(photoCard){
+
+            observer.observe(
+                photoCard
+            );
+
+        }
+
+
+        if(adCard){
+
+            observer.observe(
+                adCard
+            );
+
+        }
+
+
+    }else{
+
+
+        /* =========================
+           FALLBACK
+        ========================= */
+
+        tagImpression(
+            "photo_impression",
+            photoCard
+        );
+
+
+        tagImpression(
+            "native_banner_impression",
+            adCard
+        );
+
+    }
+
+
+})();
+
+</script>
+
+
+</body>
+
+</html>
